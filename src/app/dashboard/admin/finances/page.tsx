@@ -1,46 +1,97 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { UserRole } from "@/types/user.types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet } from "lucide-react";
+import FinanceClient from "./finance-client";
+import connectDB from "@/lib/db";
+import { Billing } from "@/models/Billing";
 
 export default async function AdminFinancesPage() {
   const session = await auth();
 
-  if (!session?.user || (session.user as any).role !== UserRole.ADMIN) {
+  if (!session?.user || session.user.role !== UserRole.ADMIN) {
     redirect("/login");
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-800">Financial Overview</h2>
-          <p className="text-slate-500">Monitor hospital revenue, billing, and expenses.</p>
-        </div>
-      </div>
+  await connectDB();
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$0.00</div>
-            <p className="text-xs text-muted-foreground">0% from last month</p>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <Card className="border-slate-200">
-        <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-500 text-center py-8">Financial tracking modules are being integrated.</p>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  // 1. Calculate Metrics
+  const [revenueData, pendingData, totalTransactions] = await Promise.all([
+    Billing.aggregate([
+      { $match: { paymentStatus: "PAID" } },
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+    ]),
+    Billing.aggregate([
+      { $match: { paymentStatus: "PENDING" } },
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+    ]),
+    Billing.countDocuments()
+  ]);
+
+  const totalRevenue = revenueData[0]?.total || 0;
+  const pendingBalance = pendingData[0]?.total || 0;
+
+  // 2. Fetch Weekly Growth Data (Last 7 Days)
+  const last7Days = new Date();
+  last7Days.setDate(last7Days.getDate() - 7);
+
+  const weeklyGrowth = await Billing.aggregate([
+    { 
+      $match: { 
+        createdAt: { $gte: last7Days },
+        paymentStatus: "PAID"
+      } 
+    },
+    {
+      $group: {
+        _id: { $dayOfWeek: "$createdAt" },
+        dayTotal: { $sum: "$totalAmount" }
+      }
+    },
+    { $sort: { "_id": 1 } }
+  ]);
+
+  // Map 1-7 (Sun-Sat) to the chart array indices
+  const chartData = [0, 0, 0, 0, 0, 0, 0]; // Mon-Sun (or Sun-Sat, we'll map carefully)
+  // MongoDB $dayOfWeek: 1 (Sun), 2 (Mon), ..., 7 (Sat)
+  // Chart expecting Mon (0), Tue (1), ..., Sun (6)
+  weeklyGrowth.forEach(item => {
+    const dayIndex = item._id === 1 ? 6 : item._id - 2; // Map Sun(1)->6, Mon(2)->0, etc.
+    if (dayIndex >= 0 && dayIndex < 7) {
+      chartData[dayIndex] = item.dayTotal;
+    }
+  });
+
+  // 3. Fetch Recent Transactions with Patient Names
+  const recentTransactions = await Billing.aggregate([
+    { $sort: { createdAt: -1 } },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: "patients",
+        localField: "patientId",
+        foreignField: "userId",
+        as: "patientInfo"
+      }
+    },
+    {
+      $project: {
+        _id: { $toString: "$_id" },
+        totalAmount: 1,
+        paymentStatus: 1,
+        paymentMethod: 1,
+        createdAt: 1,
+        patientName: { $ifNull: [{ $arrayElemAt: ["$patientInfo.name", 0] }, "Walk-in/Pharmacy"] }
+      }
+    }
+  ]);
+
+  const initialData = {
+    totalRevenue,
+    pendingBalance,
+    totalTransactions,
+    chartData,
+    recentTransactions: JSON.parse(JSON.stringify(recentTransactions))
+  };
+
+  return <FinanceClient initialData={initialData} />;
 }

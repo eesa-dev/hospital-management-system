@@ -52,7 +52,7 @@ export default function BookAppointmentClient({ doctors }: BookAppointmentClient
 
   const handleDoctorChange = (value: string | null) => {
     if (value) {
-      form.setValue("doctorId" as any, value);
+      form.setValue("doctorId", value);
     }
   };
 

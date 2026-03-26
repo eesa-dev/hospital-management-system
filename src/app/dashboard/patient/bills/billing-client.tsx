@@ -1,6 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
 import { 
   FileDown, 
   CreditCard, 
@@ -28,14 +27,20 @@ import {
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 
+interface Bill {
+  _id: string;
+  billDate: string | Date;
+  paymentStatus: "PAID" | "PENDING" | "OVERDUE";
+  paymentMethod: "CASH" | "CARD" | "INSURANCE";
+  totalAmount: number;
+}
+
 interface BillingClientProps {
-  initialBills: any[];
+  initialBills: Bill[];
 }
 
 export default function BillingClient({ initialBills }: BillingClientProps) {
-  const [isPending, startTransition] = useTransition();
-
-  const handleDownloadPDF = (bill: any) => {
+  const handleDownloadPDF = (bill: Bill) => {
     try {
       const doc = new jsPDF();
       
@@ -95,6 +100,10 @@ export default function BillingClient({ initialBills }: BillingClientProps) {
         return <Clock className="h-4 w-4 text-amber-500" />;
     }
   };
+
+  const pendingAmount = initialBills
+    .filter((bill) => bill.paymentStatus !== "PAID")
+    .reduce((sum, bill) => sum + bill.totalAmount, 0);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -180,10 +189,14 @@ export default function BillingClient({ initialBills }: BillingClientProps) {
          <Card className="bg-blue-600 text-white shadow-lg shadow-blue-200">
             <CardHeader className="pb-2">
                <CardDescription className="text-blue-100">Pending Amount</CardDescription>
-               <CardTitle className="text-3xl">$0.00</CardTitle>
+               <CardTitle className="text-3xl">${pendingAmount.toFixed(2)}</CardTitle>
             </CardHeader>
             <CardContent>
-               <p className="text-xs text-blue-200">No overdue payments found.</p>
+               <p className="text-xs text-blue-200">
+                  {pendingAmount > 0 
+                    ? `You have ${initialBills.filter(b => b.paymentStatus !== "PAID").length} unpaid invoices.` 
+                    : "No overdue payments found."}
+               </p>
             </CardContent>
          </Card>
       </div>

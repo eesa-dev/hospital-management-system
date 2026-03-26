@@ -1,26 +1,329 @@
+/* Modified by @design-enhancer — Layer 1: Clinical White Design Token Injection */
+/* Modified by @design-enhancer — Layer 2: Global Base Styles */
+
 @import "tailwindcss";
 
+/* ============================================
+   DESIGN TOKENS — Clinical White
+   @design-enhancer — Option 1
+   Surgical precision meets digital calm
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Backgrounds --- */
+  --background:          #F8FAFC;
+  --foreground:          #0F172A;
+
+  /* --- Surfaces --- */
+  --card:                #FFFFFF;
+  --card-foreground:     #0F172A;
+  --popover:             #FFFFFF;
+  --popover-foreground:  #0F172A;
+
+  /* --- Brand --- */
+  --primary:             #1D6FB8;
+  --primary-hover:       #1A62A3;
+  --primary-foreground:  #FFFFFF;
+  --primary-subtle:      #EFF6FF;
+
+  /* --- Secondary --- */
+  --secondary:           #F1F5F9;
+  --secondary-foreground:#1E293B;
+
+  /* --- Muted --- */
+  --muted:               #F8FAFC;
+  --muted-foreground:    #64748B;
+
+  /* --- Accent --- */
+  --accent:              #EFF6FF;
+  --accent-foreground:   #1D6FB8;
+
+  /* --- Semantic --- */
+  --destructive:         #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --destructive-subtle:  #FEF2F2;
+  --success:             #16A34A;
+  --success-subtle:      #F0FDF4;
+  --warning:             #D97706;
+  --warning-subtle:      #FFFBEB;
+  --info:                #0EA5E9;
+  --info-subtle:         #F0F9FF;
+
+  /* --- Structural --- */
+  --border:              #E2E8F0;
+  --border-strong:       #CBD5E1;
+  --input:               #E2E8F0;
+  --ring:                #1D6FB8;
+
+  /* --- Sidebar --- */
+  --sidebar:             #FFFFFF;
+  --sidebar-foreground:  #0F172A;
+  --sidebar-primary:     #1D6FB8;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:      #EFF6FF;
+  --sidebar-accent-foreground: #1D6FB8;
+  --sidebar-border:      #E2E8F0;
+  --sidebar-ring:        #1D6FB8;
+
+  /* --- Shape --- */
+  --radius:              6px;
+
+  /* --- Motion --- */
+  --duration-instant:    50ms;
+  --duration-fast:       150ms;
+  --duration-normal:     250ms;
+  --duration-slow:       400ms;
+  --ease-default:        cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out:            cubic-bezier(0, 0, 0.2, 1);
 }
+
+/* ============================================
+   TAILWIND V4 THEME MAPPING
+   Maps CSS variables → Tailwind utility classes
+   ============================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors */
+  --color-background:               var(--background);
+  --color-foreground:               var(--foreground);
+
+  --color-card:                     var(--card);
+  --color-card-foreground:          var(--card-foreground);
+
+  --color-popover:                  var(--popover);
+  --color-popover-foreground:       var(--popover-foreground);
+
+  --color-primary:                  var(--primary);
+  --color-primary-foreground:       var(--primary-foreground);
+
+  --color-secondary:                var(--secondary);
+  --color-secondary-foreground:     var(--secondary-foreground);
+
+  --color-muted:                    var(--muted);
+  --color-muted-foreground:         var(--muted-foreground);
+
+  --color-accent:                   var(--accent);
+  --color-accent-foreground:        var(--accent-foreground);
+
+  --color-destructive:              var(--destructive);
+  --color-destructive-foreground:   var(--destructive-foreground);
+
+  --color-success:                  var(--success);
+  --color-warning:                  var(--warning);
+  --color-info:                     var(--info);
+
+  --color-border:                   var(--border);
+  --color-input:                    var(--input);
+  --color-ring:                     var(--ring);
+
+  --color-sidebar:                  var(--sidebar);
+  --color-sidebar-foreground:       var(--sidebar-foreground);
+  --color-sidebar-primary:          var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent:           var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border:           var(--sidebar-border);
+  --color-sidebar-ring:             var(--sidebar-ring);
+
+  /* Fonts */
+  --font-sans:   var(--font-inter);
+  --font-mono:   var(--font-geist-mono);
+
+  /* Border Radius */
+  --radius-sm:   calc(var(--radius) - 2px);
+  --radius-md:   var(--radius);
+  --radius-lg:   calc(var(--radius) + 2px);
+  --radius-xl:   calc(var(--radius) + 6px);
+  --radius-2xl:  calc(var(--radius) + 10px);
+  --radius-full: 9999px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   LAYER 2 — Global Base Styles
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  border-color: var(--border);
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+
+p {
+  line-height: 1.65;
+  color: var(--foreground);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-default),
+    opacity var(--duration-fast) var(--ease-default);
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--foreground);
+  line-height: 1.5;
+}
+
+small, .text-xs {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+code, kbd, pre {
+  font-family: var(--font-mono), 'Courier New', monospace;
+  font-size: 0.875em;
+  background-color: var(--secondary);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  color: var(--foreground);
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+/* --- Selection --- */
+::selection {
+  background: color-mix(in srgb, var(--primary), transparent 82%);
+  color: var(--foreground);
+}
+
+/* --- Focus Ring --- */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Scrollbar (Webkit) --- */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* --- Base Interactive Transitions --- */
+button,
+input,
+select,
+textarea {
+  transition:
+    color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default),
+    opacity var(--duration-fast) var(--ease-default);
+}
+
+/* --- Reduced Motion Override (mandatory) --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   LAYER 5 — Motion & Micro-interactions
+   ============================================ */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* Utility animation classes */
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-default) both;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-normal) var(--ease-default) both;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-default) both;
+}
+
+/* Skeleton shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--secondary) 25%,
+    var(--muted) 50%,
+    var(--secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
 }

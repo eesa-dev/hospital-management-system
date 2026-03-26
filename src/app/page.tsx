@@ -1,54 +1,108 @@
+/* Modified by @design-enhancer — Layer 3: Clinical White — Landing Page */
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Activity, Shield, Stethoscope } from "lucide-react";
+
+const features = [
+  {
+    icon: Activity,
+    title: "Patient Care",
+    description:
+      "Book appointments online and access your complete medical history from anywhere.",
+    color: "text-primary",
+    bg: "bg-primary/8",
+  },
+  {
+    icon: Stethoscope,
+    title: "Doctor Efficiency",
+    description:
+      "Manage consultations, write prescriptions, and review EMR in one unified interface.",
+    color: "text-success",
+    bg: "bg-success/8",
+  },
+  {
+    icon: Shield,
+    title: "Hospital Operations",
+    description:
+      "Streamline billing, pharmacy inventory, and staff management with real-time data.",
+    color: "text-warning",
+    bg: "bg-warning/8",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 md:py-24">
-        <div className="max-w-3xl text-center space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900">
-              Modern Hospital <span className="text-blue-600">Management</span> System
-            </h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              A comprehensive digital platform designed to streamline healthcare operations, 
-              from seamless patient registration and smart appointment scheduling to 
-              integrated medical records and pharmacy management.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-            <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-              <h3 className="font-bold text-slate-900 mb-2">Patient Care</h3>
-              <p className="text-sm text-slate-500">Easily book appointments and access your medical history online.</p>
-            </div>
-            <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-              <h3 className="font-bold text-slate-900 mb-2">Doctor Efficiency</h3>
-              <p className="text-sm text-slate-500">Manage consultations, prescriptions, and EMR in one unified interface.</p>
-            </div>
-            <div className="p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-              <h3 className="font-bold text-slate-900 mb-2">Hospital Operations</h3>
-              <p className="text-sm text-slate-500">Streamline billing, inventory, and staff management with real-time data.</p>
-            </div>
+    <div className="flex flex-col min-h-screen bg-background">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 md:py-24">
+        <div className="max-w-3xl w-full text-center space-y-10 animate-slide-up">
+
+          {/* Trust badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card text-xs font-medium text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-success inline-block" />
+            Secure · HIPAA-Aware · 99.9% Uptime
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+          {/* Headline */}
+          <div className="space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
+              Modern{" "}
+              <span className="text-primary">Hospital Management</span>
+              <br />
+              System
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              A comprehensive digital platform designed to streamline healthcare
+              operations — from patient registration to pharmacy management.
+            </p>
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 text-left">
+            {features.map((feature) => (
+              <div
+                key={feature.title}
+                className="p-5 bg-card rounded-xl border border-border hover:border-border-strong hover:shadow-sm transition-all duration-200"
+              >
+                <div
+                  className={`h-9 w-9 rounded-lg ${feature.bg} flex items-center justify-center mb-3`}
+                >
+                  <feature.icon className={`h-4.5 w-4.5 ${feature.color}`} />
+                </div>
+                <h3 className="font-semibold text-foreground text-sm mb-1">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/login">
-              <Button size="lg" className="w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all">
-                Login
+              <Button
+                size="lg"
+                className="w-full sm:w-44 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg"
+              >
+                Sign In
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="lg" variant="outline" className="w-full sm:w-48 border-2 border-slate-300 hover:bg-slate-100 font-semibold rounded-lg transition-all">
-                Register
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-44 font-semibold rounded-lg"
+              >
+                Register as Patient
               </Button>
             </Link>
           </div>
         </div>
       </main>
-      
-      <footer className="py-8 border-t border-slate-200 text-center text-slate-400 text-sm">
-        <p>&copy; {new Date().getFullYear()} HMS - Digital Healthcare Solutions</p>
+
+      <footer className="py-6 border-t border-border text-center text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} HMS — Digital Healthcare Solutions</p>
       </footer>
     </div>
   );

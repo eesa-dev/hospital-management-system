@@ -4,7 +4,8 @@ import { IUser, UserRole } from "../types/user.types";
 const UserSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
-    password: { type: String, select: false }, // Don't return password by default
+    password: { type: String, select: false },
+    plainPasswordEncrypted: { type: String }, // For copy-to-clipboard functionality
     role: {
       type: String,
       enum: Object.values(UserRole),
@@ -12,11 +13,11 @@ const UserSchema = new Schema(
     },
     profileRef: {
       type: Schema.Types.ObjectId,
-      refPath: "profileModel", // Dynamic reference based on role (optional architecture, or we just rely on querying the specific collection with userId)
+      refPath: "profileModel",
     },
     profileModel: {
       type: String,
-      enum: ["Patients", "Doctors"],
+      enum: ["Patients", "Doctors", "StaffProfiles"],
     },
   },
   { timestamps: true }

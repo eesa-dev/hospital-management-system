@@ -11,7 +11,7 @@ export async function getInventoryAction() {
     const items = await Pharmacy.find().sort({ medicineName: 1 });
     return JSON.parse(JSON.stringify(items));
   } catch (error) {
-    console.error("Action Error [getInventoryAction]:", error);
+    console.error("Action Error [getInventoryAction]:", error instanceof Error ? error.message : error);
     return { error: "Failed to fetch inventory" };
   }
 }
@@ -19,8 +19,8 @@ export async function getInventoryAction() {
 export async function addMedicineAction(data: { medicineName: string; quantity: number; price: number }) {
   try {
     const session = await auth();
-    const role = (session?.user as any)?.role;
-    if (role !== "PHARMACIST" && role !== "ADMIN") {
+    const role = session?.user?.role;
+    if (role !== "PHARMACY" && role !== "PHARMACIST" && role !== "ADMIN") {
       return { error: "Unauthorized" };
     }
 
@@ -29,7 +29,7 @@ export async function addMedicineAction(data: { medicineName: string; quantity: 
     revalidatePath("/dashboard/pharmacy");
     return { success: true, message: "Medicine added to inventory" };
   } catch (error) {
-    console.error("Action Error [addMedicineAction]:", error);
+    console.error("Action Error [addMedicineAction]:", error instanceof Error ? error.message : error);
     return { error: "Failed to add medicine" };
   }
 }
@@ -37,8 +37,8 @@ export async function addMedicineAction(data: { medicineName: string; quantity: 
 export async function updateStockAction(id: string, increment: number) {
   try {
     const session = await auth();
-    const role = (session?.user as any)?.role;
-    if (role !== "PHARMACIST" && role !== "ADMIN") {
+    const role = session?.user?.role;
+    if (role !== "PHARMACY" && role !== "PHARMACIST" && role !== "ADMIN") {
       return { error: "Unauthorized" };
     }
 
@@ -49,7 +49,7 @@ export async function updateStockAction(id: string, increment: number) {
     revalidatePath("/dashboard/pharmacy");
     return { success: true, message: `Stock updated. Current: ${item.quantity}` };
   } catch (error) {
-    console.error("Action Error [updateStockAction]:", error);
+    console.error("Action Error [updateStockAction]:", error instanceof Error ? error.message : error);
     return { error: "Failed to update stock" };
   }
 }

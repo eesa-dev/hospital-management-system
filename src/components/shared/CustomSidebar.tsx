@@ -1,3 +1,4 @@
+/* Modified by @design-enhancer — Layer 3: Clinical White — Sidebar Visual Design */
 "use client";
 
 import Link from "next/link";
@@ -33,15 +34,22 @@ export default function CustomSidebar({ role }: { role: string }) {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="py-4">
-        <h2 className="text-xl font-bold tracking-wider uppercase text-center text-blue-600">
-          HMS
-        </h2>
+      <SidebarHeader className="py-4 px-3">
+        <div className="flex items-center gap-2.5 group-data-[collapsible=icon]:justify-center">
+          <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center shrink-0">
+            <span className="text-[11px] font-bold text-primary-foreground tracking-tight">
+              H
+            </span>
+          </div>
+          <span className="text-sm font-semibold text-foreground tracking-tight group-data-[collapsible=icon]:hidden">
+            HMS Portal
+          </span>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-slate-500 pb-2">
+          <SidebarGroupLabel className="text-muted-foreground text-[10px] tracking-widest uppercase pb-1 font-semibold">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -51,15 +59,14 @@ export default function CustomSidebar({ role }: { role: string }) {
                   pathname.startsWith(item.href) &&
                   (item.href !== "/dashboard" || pathname === "/dashboard");
                 return (
-                  <SidebarMenuItem key={item.label}>
+                  <SidebarMenuItem key={item.label} className="mt-2">
                     <SidebarMenuButton
                       isActive={isActive}
                       tooltip={item.label}
+                      render={<Link href={item.href} />}
                     >
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.label}</span>
-                      </Link>
+                      <item.icon />
+                      <span>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -69,12 +76,12 @@ export default function CustomSidebar({ role }: { role: string }) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-slate-200 p-2">
+      <SidebarFooter className="border-t border-border p-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+              className="text-destructive hover:bg-destructive/8 hover:text-destructive"
               tooltip="Logout"
             >
               <LogOut />

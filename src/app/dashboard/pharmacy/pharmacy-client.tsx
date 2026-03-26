@@ -1,13 +1,15 @@
 "use client";
 
-import { Session } from "next-auth";
-
-interface PharmacyClientProps {
-  session: Session | null;
-  initialData: any;
+interface PharmacyData {
+  lowStockItems: number;
+  pendingPrescriptions: number;
 }
 
-export default function PharmacyClient({ session, initialData }: PharmacyClientProps) {
+interface PharmacyClientProps {
+  initialData: PharmacyData;
+}
+
+export default function PharmacyClient({ initialData }: PharmacyClientProps) {
   return (
     <div className="space-y-6 animate-in fade-in zoom-in duration-500">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

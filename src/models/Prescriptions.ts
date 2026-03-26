@@ -10,6 +10,7 @@ const PrescriptionSchema = new Schema(
     dosage: { type: String, required: true },
     duration: { type: String, required: true },
     instructions: { type: String, required: false },
+    status: { type: String, enum: ["PENDING", "BILLED"], default: "PENDING" },
   },
   { timestamps: true }
 );
