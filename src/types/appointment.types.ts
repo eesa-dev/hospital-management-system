@@ -19,6 +19,7 @@ export interface IPrescription {
   dosage: string;
   duration: string;
   instructions: string;
+  status: "PENDING" | "BILLED";
   createdAt: Date;
   updatedAt: Date;
 }

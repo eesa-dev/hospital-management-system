@@ -7,8 +7,8 @@ const DoctorSchema = new Schema(
     name: { type: String, required: true },
     specialization: { type: String, required: true },
     phone: { type: String, required: true },
-    experience: { type: Number, required: true },
-    availability: { type: String, required: false },
+    experience: { type: String, required: true }, // Changed from Number to String
+    availability: { type: String, default: "Mon-Fri 9AM-5PM" },
   },
   { timestamps: true }
 );

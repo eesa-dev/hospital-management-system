@@ -54,8 +54,8 @@ export async function registerPatientAction(data: unknown) {
     await newUser.save();
 
     return { success: true, message: "Registration successful. Please log in." };
-  } catch (error: any) {
-    console.error("Action Error [registerPatientAction]:", error);
+  } catch (error) {
+    console.error("Action Error [registerPatientAction]:", error instanceof Error ? error.message : error);
     return { error: "An internal server error occurred." };
   }
 }

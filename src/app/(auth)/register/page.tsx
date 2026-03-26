@@ -1,9 +1,10 @@
+/* Modified by @design-enhancer — Layer 3: Clinical White — Register Page Wrapper */
 import PatientRegistrationForm from "../../../components/forms/PatientRegistrationForm";
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
-      <div className="w-full max-w-2xl animate-in zoom-in-95 duration-500">
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="w-full max-w-lg animate-scale-in">
         <PatientRegistrationForm />
       </div>
     </div>

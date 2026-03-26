@@ -1,15 +1,13 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { Plus, Minus, Package, DollarSign, Search } from "lucide-react";
+import { Plus, Minus, Package, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Table,
@@ -28,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { addMedicineAction, updateStockAction } from "@/actions/Pharmacy/index";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -41,8 +39,15 @@ const medicineSchema = z.object({
   price: z.number().min(0, "Price cannot be negative"),
 });
 
+interface InventoryItem {
+  _id: string;
+  medicineName: string;
+  quantity: number;
+  price: number;
+}
+
 interface InventoryClientProps {
-  initialItems: any[];
+  initialItems: InventoryItem[];
 }
 
 export default function InventoryClient({ initialItems }: InventoryClientProps) {
@@ -88,16 +93,16 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 text-left">Pharmacy Inventory</h2>
-          <p className="text-slate-500 text-left mt-1">Manage stock levels and medicine pricing.</p>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Pharmacy Inventory</h2>
+          <p className="text-muted-foreground mt-1">Manage stock levels and medicine pricing.</p>
         </div>
         
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 h-10 px-6 font-semibold shadow-lg shadow-blue-100">
+            <Button className="bg-primary hover:bg-primary/90 h-9 px-5 font-semibold text-primary-foreground">
               <Plus className="mr-2 h-4 w-4" /> Add New Medicine
             </Button>
           </DialogTrigger>
@@ -144,7 +149,7 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit" disabled={isPending} className="w-full bg-blue-600">
+                <Button type="submit" disabled={isPending} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                   {isPending ? "Adding..." : "Add Medicine"}
                 </Button>
               </DialogFooter>
@@ -153,13 +158,13 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
         </Dialog>
       </div>
 
-      <Card className="border-slate-200 shadow-sm">
+      <Card className="shadow-sm">
         <CardHeader className="border-b border-slate-100 bg-slate-50/50 pb-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
               placeholder="Filter by medicine name..." 
-              className="pl-9 h-10 border-slate-200"
+              className="pl-9 h-9"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -178,25 +183,30 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
             <TableBody>
               {filteredItems.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-48 text-center text-slate-400">
+                <TableCell colSpan={4} className="h-48 text-center text-muted-foreground">
                     <Package className="mx-auto h-10 w-10 mb-2 opacity-15" />
                     <p>No medicines found in inventory.</p>
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredItems.map((item) => (
-                  <TableRow key={item._id} className="group transition-colors hover:bg-slate-50/80">
-                    <TableCell className="pl-6 font-medium text-slate-800">
+                  <TableRow key={item._id} className="group transition-colors hover:bg-muted/40">
+                    <TableCell className="pl-6 font-medium text-foreground">
                       {item.medicineName}
                     </TableCell>
                     <TableCell>
-                      <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${
-                        item.quantity < 10 ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700"
+                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium font-mono ${
+                        item.quantity < 10
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-primary/8 text-primary"
                       }`}>
+                        <span className={`h-1.5 w-1.5 rounded-full inline-block ${
+                          item.quantity < 10 ? "bg-destructive" : "bg-primary"
+                        }`} />
                         {item.quantity} in stock
                       </span>
                     </TableCell>
-                    <TableCell className="font-medium text-slate-600">
+                    <TableCell className="font-medium text-muted-foreground font-mono">
                       ${item.price.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-right pr-6 space-x-2">
@@ -205,7 +215,7 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
                         size="icon" 
                         disabled={isPending || item.quantity <= 0}
                         onClick={() => handleUpdateStock(item._id, -1)}
-                        className="h-8 w-8 text-red-600 border-red-100 hover:bg-red-50 hover:text-red-700"
+                        className="h-8 w-8 text-destructive border-destructive/20 hover:bg-destructive/8 hover:text-destructive"
                        >
                          <Minus className="h-3.5 w-3.5" />
                        </Button>
@@ -214,7 +224,7 @@ export default function InventoryClient({ initialItems }: InventoryClientProps) 
                         size="icon" 
                         disabled={isPending}
                         onClick={() => handleUpdateStock(item._id, 1)}
-                        className="h-8 w-8 text-emerald-600 border-emerald-100 hover:bg-emerald-50 hover:text-emerald-700"
+                        className="h-8 w-8 text-success border-success/20 hover:bg-success/8 hover:text-success"
                        >
                          <Plus className="h-4 w-4" />
                        </Button>
