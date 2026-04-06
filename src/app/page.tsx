@@ -50,9 +50,10 @@ export default function Home() {
               <br />
               System
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              A comprehensive digital platform designed to streamline healthcare
-              operations — from patient registration to pharmacy management.
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              A  digital platform designed to streamline healthcare operations, 
+              from seamless patient registration and smart appointment scheduling to 
+              integrated medical records and pharmacy management.
             </p>
           </div>
 
