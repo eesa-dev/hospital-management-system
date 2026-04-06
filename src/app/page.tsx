@@ -11,7 +11,7 @@ export default function Home() {
               Modern Hospital <span className="text-blue-600">Management</span> System
             </h1>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              A comprehensive digital platform designed to streamline healthcare operations, 
+              A  digital platform designed to streamline healthcare operations, 
               from seamless patient registration and smart appointment scheduling to 
               integrated medical records and pharmacy management.
             </p>
