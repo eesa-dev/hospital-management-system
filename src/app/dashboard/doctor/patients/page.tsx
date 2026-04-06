@@ -5,7 +5,7 @@ import { UserRole } from "@/types/user.types";
 export default async function DoctorPatientsPage() {
   const session = await auth();
 
-  if (!session?.user || (session.user as any).role !== UserRole.DOCTOR) {
+  if (!session?.user || session.user.role !== UserRole.DOCTOR) {
     redirect("/login");
   }
 

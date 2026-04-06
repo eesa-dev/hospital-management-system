@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 export default async function PatientPage() {
   const session = await auth();
 
-  if (!session?.user || (session.user as any).role !== UserRole.PATIENT) {
+  if (!session?.user || session.user.role !== UserRole.PATIENT) {
     redirect("/login");
   }
 
@@ -22,7 +22,7 @@ export default async function PatientPage() {
   // Fetch user-specific data using aggregation for appointments to join with Doctors
   const [pendingBillsData, upcomingAppointments, medicalRecords] = await Promise.all([
     Billing.aggregate([
-      { $match: { patientId: session.user.id, paymentStatus: "PENDING" } },
+      { $match: { patientId: session.user.id, paymentStatus: { $in: ["PENDING", "OVERDUE"] } } },
       { $group: { _id: null, total: { $sum: "$totalAmount" } } }
     ]),
     Appointments.aggregate([
@@ -89,5 +89,5 @@ export default async function PatientPage() {
     medicalRecords: JSON.parse(JSON.stringify(medicalRecords)),
   };
 
-  return <PatientClient session={session} initialData={initialData} />;
+  return <PatientClient initialData={initialData} />;
 }

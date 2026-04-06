@@ -50,8 +50,8 @@ export async function createAppointmentAction(data: unknown) {
       message: "Appointment booked successfully",
       appointmentId: newAppointment._id.toString() 
     };
-  } catch (error: any) {
-    console.error("Action Error [createAppointmentAction]:", error);
+  } catch (error) {
+    console.error("Action Error [createAppointmentAction]:", error instanceof Error ? error.message : error);
     return { error: "An internal server error occurred." };
   }
 }
@@ -71,7 +71,7 @@ export async function updateAppointmentStatusAction(appointmentId: string, statu
     }
 
     // Ensure the doctor is the one updating it (or an admin)
-    if (appointment.doctorId.toString() !== session.user.id && (session.user as any).role !== "ADMIN") {
+    if (appointment.doctorId.toString() !== session.user.id && session.user.role !== "ADMIN") {
       return { error: "You are not authorized to manage this appointment." };
     }
 
@@ -82,8 +82,8 @@ export async function updateAppointmentStatusAction(appointmentId: string, statu
     revalidatePath("/dashboard/patient");
     
     return { success: true, message: `Appointment marked as ${status.toLowerCase()}` };
-  } catch (error: any) {
-    console.error("Action Error [updateAppointmentStatusAction]:", error);
+  } catch (error) {
+    console.error("Action Error [updateAppointmentStatusAction]:", error instanceof Error ? error.message : error);
     return { error: "An internal server error occurred." };
   }
 }

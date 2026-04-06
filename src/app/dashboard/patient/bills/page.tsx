@@ -6,12 +6,11 @@ import { redirect } from "next/navigation";
 export default async function BillingPage() {
   const session = await auth();
 
-  if (!session?.user || (session.user as any).role !== "PATIENT") {
+  if (!session?.user || session.user.role !== "PATIENT") {
     redirect("/login");
   }
 
-  // Casting user as any to access custom id added by the session callback
-  const bills = await getPatientBillsAction((session.user as any).id);
+  const bills = await getPatientBillsAction(session.user.id);
 
   return <BillingClient initialBills={bills} />;
 }

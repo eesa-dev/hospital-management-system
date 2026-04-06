@@ -1,15 +1,13 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { Plus, Minus, Package, DollarSign, Search } from "lucide-react";
+import { Plus, Minus, Package, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Table,
@@ -32,7 +30,6 @@ import {
   Field,
   FieldLabel,
   FieldError,
-  FieldGroup,
 } from "@/components/ui/field";
 import { addMedicineAction, updateStockAction } from "@/actions/Pharmacy/index";
 import { toast } from "sonner";
@@ -46,8 +43,15 @@ const medicineSchema = z.object({
   price: z.number().min(0, "Price cannot be negative"),
 });
 
+interface InventoryItem {
+  _id: string;
+  medicineName: string;
+  quantity: number;
+  price: number;
+}
+
 interface InventoryClientProps {
-  initialItems: any[];
+  initialItems: InventoryItem[];
 }
 
 export default function InventoryClient({

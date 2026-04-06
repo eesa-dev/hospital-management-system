@@ -3,22 +3,23 @@
 import connectDB from "../../lib/db";
 import { Users } from "../../models/Users";
 import { Doctors } from "../../models/Doctors";
+import { StaffProfiles } from "../../models/StaffProfiles";
 import { staffCreationSchema } from "../../schemas/user.schema";
 import bcryptjs from "bcryptjs";
 import { auth } from "../../auth";
 import { UserRole } from "../../types/user.types";
+import { encryptPassword } from "../../lib/encryption";
+import { revalidatePath } from "next/cache";
 
 export async function createStaffAction(data: unknown) {
   try {
     const session = await auth();
-    // Only ADMIN can create staff
-    if ((session?.user as any)?.role !== UserRole.ADMIN) {
+    if (session?.user?.role !== UserRole.ADMIN) {
       return { error: "Unauthorized. Only admins can create staff members." };
     }
 
     await connectDB();
 
-    // 1. Zod Validation
     const parsedResult = staffCreationSchema.safeParse(data);
     if (!parsedResult.success) {
       return { 
@@ -27,27 +28,25 @@ export async function createStaffAction(data: unknown) {
       };
     }
 
-    const { name, email, role, phone, specialization, experience } = parsedResult.data;
+    const { name, email, password, role, phone, specialization, experience } = parsedResult.data;
 
-    // 2. Check for existing user
     const existingUser = await Users.findOne({ email });
     if (existingUser) {
       return { error: "An account with this email already exists." };
     }
 
-    // 3. Default Password for new staff (should be changed on first login)
-    const defaultPassword = "HmsStaffPassword123!";
-    const hashedPassword = await bcryptjs.hash(defaultPassword, 10);
+    // Hash for security, encrypt for retrieval
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const encryptedPassword = encryptPassword(password);
 
-    // 4. Create User Document
     const newUser = await Users.create({
       email,
       password: hashedPassword,
+      plainPasswordEncrypted: encryptedPassword,
       role: role as UserRole,
-      profileModel: role === "DOCTOR" ? "Doctors" : undefined,
+      profileModel: role === "DOCTOR" ? "Doctors" : "StaffProfiles",
     });
 
-    // 5. Create Profile if DOCTOR
     if (role === "DOCTOR") {
       const newDoctor = await Doctors.create({
         userId: newUser._id,
@@ -57,15 +56,26 @@ export async function createStaffAction(data: unknown) {
         experience,
       });
       newUser.profileRef = newDoctor._id;
-      await newUser.save();
+    } else {
+      const newStaff = await StaffProfiles.create({
+        userId: newUser._id,
+        name,
+        phone,
+        specialization,
+        experience,
+      });
+      newUser.profileRef = newStaff._id;
     }
+    
+    await newUser.save();
 
+    revalidatePath("/dashboard/admin/staff");
     return { 
       success: true, 
-      message: `${role} account created successfully. Temporary password: ${defaultPassword}` 
+      message: `${role} account created successfully.` 
     };
-  } catch (error: any) {
-    console.error("Action Error [createStaffAction]:", error);
+  } catch (error) {
+    console.error("Action Error [createStaffAction]:", error instanceof Error ? error.message : error);
     return { error: "An internal server error occurred." };
   }
 }

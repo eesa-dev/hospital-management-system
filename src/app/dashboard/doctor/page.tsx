@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import DoctorClient from "./doctor-client";
 import connectDB from "../../../lib/db";
 import { Appointments } from "../../../models/Appointments";
+import { Pharmacy } from "../../../models/Pharmacy";
 import mongoose from "mongoose";
 import { redirect } from "next/navigation";
 import { UserRole } from "@/types/user.types";
@@ -9,14 +10,13 @@ import { UserRole } from "@/types/user.types";
 export default async function DoctorPage() {
   const session = await auth();
 
-  if (!session?.user || (session.user as any).role !== UserRole.DOCTOR) {
+  if (!session?.user || session.user.role !== UserRole.DOCTOR) {
     redirect("/login");
   }
 
   await connectDB();
 
-  // Fetch appointments for this doctor and populate patient info
-  // Using a more robust aggregation that handles potential missing patient profiles
+  // 1. Fetch appointments for this doctor and populate patient info
   const richAppointments = await Appointments.aggregate([
     { $match: { doctorId: new mongoose.Types.ObjectId(session.user.id) } },
     {
@@ -41,5 +41,13 @@ export default async function DoctorPage() {
     { $sort: { appointmentDate: 1 } }
   ]);
 
-  return <DoctorClient session={session} initialAppointments={richAppointments} />;
+  // 2. Fetch available medicines from Pharmacy Inventory
+  const inventory = await Pharmacy.find().sort({ medicineName: 1 }).lean();
+
+  return (
+    <DoctorClient 
+      initialAppointments={richAppointments} 
+      inventory={JSON.parse(JSON.stringify(inventory))}
+    />
+  );
 }

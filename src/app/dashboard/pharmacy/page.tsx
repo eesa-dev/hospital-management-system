@@ -7,7 +7,7 @@ import { UserRole } from "@/types/user.types";
 export default async function PharmacyPage() {
   const session = await auth();
 
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
   if (!session?.user || (role !== UserRole.PHARMACY && role !== "PHARMACIST")) {
     redirect("/login");
   }

@@ -14,6 +14,7 @@ export const ADMIN_NAV = [
   { label: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
   { label: "Manage Staff", href: "/dashboard/admin/staff", icon: Users },
   { label: "Finances", href: "/dashboard/admin/finances", icon: Wallet },
+  { label: "Billing", href: "/dashboard/admin/billing", icon: Receipt },
 ];
 
 export const DOCTOR_NAV = [
