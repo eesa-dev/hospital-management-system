@@ -1,4 +1,3 @@
-/* Modified by @design-enhancer — Layer 4: Clinical White — PatientRegistrationForm Visual Design */
 "use client";
 
 import { useTransition } from "react";
@@ -9,9 +8,19 @@ import { patientRegistrationSchema } from "../../schemas/user.schema";
 import { registerPatientAction } from "../../actions/User/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldGroup,
+} from "@/components/ui/field";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -49,94 +58,95 @@ export default function PatientRegistrationForm() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header above card — matches login page pattern */}
-      <div className="text-center space-y-1.5">
-        <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary mb-3">
-          <span className="text-lg font-bold text-primary-foreground">H</span>
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Create your account
+    <div className="space-y-8">
+      {/* Header Area */}
+      <div className="space-y-2 text-center">
+        <h1 className="text-5xl font-serif font-medium tracking-tight text-foreground">
+          Create Account
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Enter your details securely to register as a patient
+        <p className="text-sm text-muted-foreground font-light max-w-[320px] mx-auto leading-relaxed">
+          Join the HMS platform to manage your healthcare journey
         </p>
       </div>
 
-      <Card className="border-border shadow-sm">
-        <CardContent className="pt-6">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <FieldGroup>
+      <div className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FieldGroup className="space-y-4">
+            <Field>
+              <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Full Name</FieldLabel>
+              <Input
+                placeholder="Enter your full name"
+                disabled={isPending}
+                className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                {...form.register("name")}
+              />
+              {form.formState.errors.name && (
+                <FieldError>{form.formState.errors.name.message}</FieldError>
+              )}
+            </Field>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field>
-                <FieldLabel>Full Name</FieldLabel>
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Email</FieldLabel>
                 <Input
-                  placeholder="John Doe"
+                  type="email"
+                  placeholder="john@example.com"
                   disabled={isPending}
-                  {...form.register("name")}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                  {...form.register("email")}
                 />
-                {form.formState.errors.name && (
-                  <FieldError>{form.formState.errors.name.message}</FieldError>
+                {form.formState.errors.email && (
+                  <FieldError>{form.formState.errors.email.message}</FieldError>
                 )}
               </Field>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel>Email Address</FieldLabel>
-                  <Input
-                    type="email"
-                    placeholder="john@example.com"
-                    disabled={isPending}
-                    {...form.register("email")}
-                  />
-                  {form.formState.errors.email && (
-                    <FieldError>{form.formState.errors.email.message}</FieldError>
-                  )}
-                </Field>
+              <Field>
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Password</FieldLabel>
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  disabled={isPending}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                  {...form.register("password")}
+                />
+                {form.formState.errors.password && (
+                  <FieldError>{form.formState.errors.password.message}</FieldError>
+                )}
+              </Field>
+            </div>
 
-                <Field>
-                  <FieldLabel>Password</FieldLabel>
-                  <Input
-                    type="password"
-                    placeholder="••••••••"
-                    disabled={isPending}
-                    {...form.register("password")}
-                  />
-                  {form.formState.errors.password && (
-                    <FieldError>{form.formState.errors.password.message}</FieldError>
-                  )}
-                </Field>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel>Phone Number</FieldLabel>
-                  <Input
-                    type="tel"
-                    placeholder="+1234567890"
-                    disabled={isPending}
-                    {...form.register("phone")}
-                  />
-                  {form.formState.errors.phone && (
-                    <FieldError>{form.formState.errors.phone.message}</FieldError>
-                  )}
-                </Field>
-
-                <Field>
-                  <FieldLabel>Date of Birth</FieldLabel>
-                  <Input
-                    type="date"
-                    disabled={isPending}
-                    {...form.register("dateOfBirth")}
-                  />
-                  {form.formState.errors.dateOfBirth && (
-                    <FieldError>{form.formState.errors.dateOfBirth.message}</FieldError>
-                  )}
-                </Field>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field>
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Phone</FieldLabel>
+                <Input
+                  type="tel"
+                  placeholder="+123 456 7890"
+                  disabled={isPending}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                  {...form.register("phone")}
+                />
+                {form.formState.errors.phone && (
+                  <FieldError>{form.formState.errors.phone.message}</FieldError>
+                )}
+              </Field>
 
               <Field>
-                <FieldLabel>Gender</FieldLabel>
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Birth Date</FieldLabel>
+                <Input
+                  type="date"
+                  disabled={isPending}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                  {...form.register("dateOfBirth")}
+                />
+                {form.formState.errors.dateOfBirth && (
+                  <FieldError>{form.formState.errors.dateOfBirth.message}</FieldError>
+                )}
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Field className="md:col-span-1">
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Gender</FieldLabel>
                 <Select
                   disabled={isPending}
                   onValueChange={(val: "MALE" | "FEMALE" | "OTHER" | null) => {
@@ -144,8 +154,8 @@ export default function PatientRegistrationForm() {
                   }}
                   value={genderValue}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select gender" />
+                  <SelectTrigger className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm">
+                    <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MALE">Male</SelectItem>
@@ -158,42 +168,42 @@ export default function PatientRegistrationForm() {
                 )}
               </Field>
 
-              <Field>
-                <FieldLabel>Home Address</FieldLabel>
+              <Field className="md:col-span-2">
+                <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Address</FieldLabel>
                 <Input
-                  placeholder="123 Main St, City, Country"
+                  placeholder="Medical District, City"
                   disabled={isPending}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
                   {...form.register("address")}
                 />
                 {form.formState.errors.address && (
                   <FieldError>{form.formState.errors.address.message}</FieldError>
                 )}
               </Field>
+            </div>
+          </FieldGroup>
 
-            </FieldGroup>
+          <Button
+            type="submit"
+            className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-xl text-sm transition-all active:scale-[0.98] mt-2"
+            disabled={isPending}
+          >
+            {isPending ? "Processing..." : "Create Account"}
+          </Button>
+        </form>
 
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-10"
-              disabled={isPending}
-            >
-              {isPending ? "Registering account securely..." : "Create Account"}
-            </Button>
-          </form>
-        </CardContent>
-
-        <CardFooter className="flex justify-center border-t border-border pt-4 pb-5">
-          <p className="text-sm text-muted-foreground">
+        <div className="text-center pt-2">
+          <p className="text-xs text-muted-foreground font-light">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-primary font-medium hover:opacity-70 transition-opacity"
+              className="text-primary font-bold hover:underline decoration-primary underline-offset-4"
             >
-              Sign in here
+              Sign In
             </Link>
           </p>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

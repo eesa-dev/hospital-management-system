@@ -1,4 +1,3 @@
-/* Modified by @design-enhancer — Layer 4: Clinical White — LoginForm Visual Design */
 "use client";
 
 import { useTransition, useState } from "react";
@@ -9,8 +8,12 @@ import { loginSchema } from "../../schemas/user.schema";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldGroup,
+} from "@/components/ui/field";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -49,84 +52,95 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header above card */}
-      <div className="text-center space-y-1.5">
-        <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary mb-3">
-          <span className="text-lg font-bold text-primary-foreground">H</span>
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Welcome back
+    <div className="space-y-8">
+      {/* Header Area */}
+      <div className="space-y-2 text-center">
+        <h1 className="text-5xl font-serif font-medium tracking-tight text-foreground">
+          Welcome Back
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Sign in to the Hospital Management System
+        <p className="text-sm text-muted-foreground font-light max-w-[320px] mx-auto leading-relaxed">
+          Enter your email and password to access your account
         </p>
       </div>
 
-      <Card className="border-border shadow-sm">
-        <CardContent className="pt-6">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <FieldGroup>
-              <Field>
-                <FieldLabel>Email Address</FieldLabel>
-                <Input
-                  type="email"
-                  placeholder="admin@hms.com"
-                  disabled={isPending}
-                  {...form.register("email")}
-                />
-                {form.formState.errors.email && (
-                  <FieldError>{form.formState.errors.email.message}</FieldError>
-                )}
-              </Field>
+      <div className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FieldGroup className="space-y-4">
+            <Field>
+              <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Email</FieldLabel>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                disabled={isPending}
+                className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
+                {...form.register("email")}
+              />
+              {form.formState.errors.email && (
+                <FieldError>{form.formState.errors.email.message}</FieldError>
+              )}
+            </Field>
 
-              <Field>
-                <div className="flex items-center justify-between">
-                  <FieldLabel>Password</FieldLabel>
-                  <Link
-                    href="#"
-                    className="text-xs font-medium text-primary hover:opacity-70 transition-opacity"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+            <Field>
+              <FieldLabel className="text-foreground font-semibold mb-1.5 block text-sm">Password</FieldLabel>
+              <div className="relative">
                 <Input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   disabled={isPending}
+                  className="h-12 bg-muted border-none px-4 focus:ring-1 focus:ring-ring transition-all font-medium text-sm"
                   {...form.register("password")}
                 />
-                {form.formState.errors.password && (
-                  <FieldError>
-                    {form.formState.errors.password.message}
-                  </FieldError>
-                )}
-                {errorMsg && <FieldError>{errorMsg}</FieldError>}
-              </Field>
-            </FieldGroup>
+              </div>
+              {form.formState.errors.password && (
+                <FieldError>{form.formState.errors.password.message}</FieldError>
+              )}
+            </Field>
+          </FieldGroup>
 
+          <div className="pt-2">
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-10"
+              className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-xl text-sm transition-all active:scale-[0.98]"
               disabled={isPending}
             >
-              {isPending ? "Authenticating..." : "Sign In"}
+              {isPending ? "Signing In..." : "Sign In"}
             </Button>
-          </form>
-        </CardContent>
+          </div>
+        </form>
 
-        <CardFooter className="flex justify-center border-t border-border pt-4 pb-5">
-          <p className="text-sm text-muted-foreground">
-            New patient?{" "}
+        <div className="text-center pt-2">
+          <p className="text-xs text-muted-foreground font-light">
+            Don't have an account?{" "}
             <Link
               href="/register"
-              className="text-primary font-medium hover:opacity-70 transition-opacity"
+              className="text-primary font-bold hover:underline decoration-primary underline-offset-4"
             >
-              Register here
+              Sign Up
             </Link>
           </p>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function LoadingSpinner({ className }: { className?: string }) {
+  return (
+    <svg className={`animate-spin ${className}`} viewBox="0 0 24 24">
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      />
+    </svg>
   );
 }
