@@ -308,6 +308,10 @@ textarea {
   animation: fade-in var(--duration-normal) var(--ease-default) both;
 }
 
+.animate-fade-in-up {
+  animation: slide-up var(--duration-normal) var(--ease-default) both;
+}
+
 .animate-slide-up {
   animation: slide-up var(--duration-normal) var(--ease-default) both;
 }
@@ -315,6 +319,16 @@ textarea {
 .animate-scale-in {
   animation: scale-in var(--duration-normal) var(--ease-default) both;
 }
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.05); }
+}
+
 
 /* Skeleton shimmer */
 .skeleton-shimmer {
